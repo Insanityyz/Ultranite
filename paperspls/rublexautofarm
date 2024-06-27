@@ -1,0 +1,71 @@
+local Players = game:GetService("Players")
+local workspace = game:GetService("Workspace")
+local vehicleShop = workspace.VehicleShop
+local player = Players.LocalPlayer
+local humanoidRootPart = player.Character.HumanoidRootPart
+local running = true
+local wrenchAcquired = false
+
+-- Function to create the GUI button
+local function createStopButton()
+    local screenGui = Instance.new("ScreenGui", player.PlayerGui)
+    screenGui.Name = "StopScriptGui"
+    
+    local button = Instance.new("TextButton", screenGui)
+    button.Size = UDim2.new(0, 100, 0, 50)
+    button.Position = UDim2.new(0.5, -50, 0, 10)
+    button.Text = "Stop"
+    button.TextScaled = true
+
+    button.MouseButton1Click:Connect(function()
+        running = false
+        screenGui:Destroy()
+    end)
+end
+
+-- Function to acquire the wrench
+local function getWrench()
+    humanoidRootPart.CFrame = vehicleShop.MeshPart.CFrame
+    fireproximityprompt(vehicleShop.MeshPart.ProximityPrompt)
+    task.wait(0.1)
+    fireproximityprompt(vehicleShop.MeshPart.ProximityPrompt)
+    task.wait(0.1)
+    humanoidRootPart.CFrame = vehicleShop.MeshPart.CFrame
+    fireproximityprompt(vehicleShop.MeshPart.ProximityPrompt)
+    task.wait(0.1)
+    humanoidRootPart.CFrame = vehicleShop.MeshPart.CFrame
+    fireproximityprompt(vehicleShop.MeshPart.ProximityPrompt)
+    task.wait(0.1)
+    humanoidRootPart.CFrame = CFrame.new(325.4398498535156, 2.3936524391174316, 84.23402404785156)
+    fireproximityprompt(vehicleShop.MeshPart.ProximityPrompt)
+    task.wait(0.5)
+end
+
+-- Function to perform the repeated click actions
+local function performClicks()
+    for _, v in ipairs(vehicleShop:GetChildren()) do
+        if v.Name == "CarMake" or v.Name == "Carmake2" then
+            for _, SUPERSIGMA in ipairs(v:GetDescendants()) do
+                if SUPERSIGMA:IsA("ProximityPrompt") then
+                    fireproximityprompt(SUPERSIGMA)
+                    SUPERSIGMA.RequiresLineOfSight = false
+                end
+            end
+        end
+    end
+end
+
+-- Create the stop button GUI
+createStopButton()
+
+-- Perform the wrench action once
+if not wrenchAcquired then
+    getWrench()
+    wrenchAcquired = true
+end
+
+-- Main loop that runs until the stop button is clicked
+while running do
+    performClicks()
+    task.wait()
+end
